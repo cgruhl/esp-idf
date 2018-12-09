@@ -197,7 +197,7 @@ void linenoiseNoEcho(void) {
     s_noecho = 1;
 }
 void linenoiseEcho(void) {
-    s_noecho = 1;
+    s_noecho = 0;
 }
 
 /* ======================= Low level terminal handling ====================== */
