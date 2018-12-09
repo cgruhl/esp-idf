@@ -129,6 +129,9 @@ static int history_max_len = LINENOISE_DEFAULT_HISTORY_MAX_LEN;
 static int history_len = 0;
 static char **history = NULL;
 
+static int s_noecho = 0; /* Disable echoing */
+
+
 /* The linenoiseState structure represents the state during line editing.
  * We pass this state to functions implementing specific editing
  * functionalities. */
@@ -188,6 +191,14 @@ FILE *lndebug_fp = NULL;
 #else
 #define lndebug(fmt, ...)
 #endif
+/* ======================= Hacked stuff ====================== */
+
+void linenoiseNoEcho(void) {
+    s_noecho = 1;
+}
+void linenoiseEcho(void) {
+    s_noecho = 1;
+}
 
 /* ======================= Low level terminal handling ====================== */
 
@@ -456,7 +467,13 @@ static void refreshSingleLine(struct linenoiseState *l) {
     abAppend(&ab,seq,strlen(seq));
     /* Write the prompt and the current buffer content */
     abAppend(&ab,l->prompt,strlen(l->prompt));
-    abAppend(&ab,buf,len);
+    if(s_noecho) {
+        for(int i=0; i<len;++i) {
+            abAppend(&ab, "*\0" ,1);
+        }
+    } else {
+        abAppend(&ab,buf,len);
+    }
     /* Show hits if any. */
     refreshShowHints(&ab,l,plen);
     /* Erase to right */
@@ -510,7 +527,13 @@ static void refreshMultiLine(struct linenoiseState *l) {
 
     /* Write the prompt and the current buffer content */
     abAppend(&ab,l->prompt,strlen(l->prompt));
-    abAppend(&ab,l->buf,l->len);
+    if(s_noecho) {
+        for(int i=0; i<l->len;++i) {
+            abAppend(&ab, "*\0" ,1);
+        }
+    } else {
+        abAppend(&ab,l->buf,l->len);
+    }
 
     /* Show hits if any. */
     refreshShowHints(&ab,l,plen);

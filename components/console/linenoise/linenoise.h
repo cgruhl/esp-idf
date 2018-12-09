@@ -68,6 +68,8 @@ void linenoiseClearScreen(void);
 void linenoiseSetMultiLine(int ml);
 void linenoiseSetDumbMode(int set);
 void linenoisePrintKeyCodes(void);
+void linenoiseNoEcho(void);
+void linenoiseEcho(void);
 
 #ifdef __cplusplus
 }
